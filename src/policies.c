@@ -1,4 +1,5 @@
 #include "policies.h"
+#include <stdlib.h>
 
 // LRU (Least Recently Used)
 // Evicts the line whose timestamp timestamp is smallest meaning it was accessed the longest time ago.
