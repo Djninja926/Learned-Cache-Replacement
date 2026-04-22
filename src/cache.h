@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define NUM_SETS 256 // 256 Cache Lines
-#define NUM_WAYS 8 // 8 Buckets/Sets of Cache Lines
+#define NUM_SETS 256 // 256 Buckets/Sets of Cache Lines
+#define NUM_WAYS 8 // 8 Cache lines in each set
 #define BLOCK_SIZE 64 // 64 Bytes (Standard x86)
 
 typedef struct {
