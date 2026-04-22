@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-/* Are they powers of 2 to be byte aligned? */
 #define NUM_SETS 256 // 256 Cache Lines
 #define NUM_WAYS 8 // 8 Buckets/Sets of Cache Lines
 #define BLOCK_SIZE 64 // 64 Bytes (Standard x86)
