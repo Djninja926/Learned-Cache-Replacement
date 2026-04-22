@@ -1,7 +1,8 @@
 # Trace files are too large for git
 traces/
-
 # Compiled binaries
+sim
+sim.exe
 *.o
 *.out
 bin/
