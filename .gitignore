@@ -1,0 +1,7 @@
+# Trace files are too large for git
+traces/
+
+# Compiled binaries
+*.o
+*.out
+bin/
