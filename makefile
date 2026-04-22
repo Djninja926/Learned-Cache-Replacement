@@ -17,5 +17,7 @@ test_trace:
 
 test: $(TARGET) test_trace
 	./$(TARGET) lru traces/test.txt
+	./$(TARGET) lfu traces/test.txt
+	./$(TARGET) opt traces/test.txt
 
 .PHONY: all clean test test_trace

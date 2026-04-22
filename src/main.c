@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         fprintf(stderr, "Usage: %s <policy> <trace_file>\n", argv[0]);
-        fprintf(stderr, "policies: lru, lfu\n");
+        fprintf(stderr, "policies: lru, lfu, opt\n");
         return 1;
     }
 
@@ -15,9 +15,9 @@ int main(int argc, char *argv[]) {
     const char *trace_path = argv[2];
 
     /* Validate policy before opening anything */
-    if (strcmp(policy, "lru") != 0 && strcmp(policy, "lfu") != 0) {
+    if (strcmp(policy, "lru") != 0 && strcmp(policy, "lfu") != 0 && strcmp(policy, "opt") != 0) {
         fprintf(stderr, "Unknown policy: %s\n", policy);
-        fprintf(stderr, "policies: lru, lfu\n");
+        fprintf(stderr, "policies: lru, lfu, opt\n");
         return 1;
     }
 
@@ -38,21 +38,40 @@ int main(int argc, char *argv[]) {
     printf("Ways: %d\n", NUM_WAYS);
     printf("Block size: %d bytes\n", BLOCK_SIZE);
 
-    TraceEntry entry;
-    uint64_t access_count = 0;
+    // Branch the execution based on algorithm type
+    if (strcmp(policy, "opt") == 0) {
+        printf("\nLoading trace into memory for OPT...\n");
+        TraceEntry *trace = NULL;
+        uint64_t n = load_trace(f, &trace);
+        
+        printf("Loaded %lu accesses. Computing next_use array...\n", n);
+        uint64_t *next_use = compute_next_use(trace, n);
+        
+        printf("Running OPT simulation...\n");
+        opt_simulate(&cache, trace, next_use, n);
+        
+        // Free the massive arrays to prevent memory leaks
+        free(trace);
+        free(next_use);
+        
+    } else {
+        printf("\nRunning streaming simulation...\n");
+        TraceEntry entry;
+        uint64_t access_count = 0;
 
-    while (parse_trace_line(f, &entry)) {
-        access_count++;
+        while (parse_trace_line(f, &entry)) {
+            access_count++;
 
-        if (strcmp(policy, "lru") == 0) {
-            lru_access(&cache, &entry);
-        } else if (strcmp(policy, "lfu") == 0) {
-            lfu_access(&cache, &entry);
-        }
+            if (strcmp(policy, "lru") == 0) {
+                lru_access(&cache, &entry);
+            } else if (strcmp(policy, "lfu") == 0) {
+                lfu_access(&cache, &entry);
+            }
 
-        // Progress indicator every 1M accesses
-        if (access_count % 1000000 == 0) {
-            printf("  Processed %lu M accesses...\n", access_count / 1000000);
+            // Progress indicator every 1M accesses
+            if (access_count % 1000000 == 0) {
+                printf("  Processed %lu M accesses...\n", access_count / 1000000);
+            }
         }
     }
 
