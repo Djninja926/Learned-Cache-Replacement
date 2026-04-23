@@ -253,7 +253,7 @@ void perceptron_update(Perceptron *p, CacheLine *line, uint64_t current_time, in
 
     if (recency > 1000) recency = 1000;
 
-    // Feature Scaling: Bring continuous variables down to the Perceptron's weight range
+    // Bring continuous variables down to the Perceptron's weight range
     int scaled_recency = (int)(recency >> 6);
     int scaled_freq = (frequency > 15) ? 15 : (int)frequency;
 

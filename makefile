@@ -15,7 +15,19 @@ clean:
 test_trace:
 	python3 scripts/gen_test_trace.py
 
-test: $(TARGET)
+test_gen: $(TARGET) test_trace
+	./$(TARGET) lru traces/test.txt
+	./$(TARGET) lfu traces/test.txt
+	./$(TARGET) ml traces/test.txt
+	./$(TARGET) opt traces/test.txt
+
+test_astar: $(TARGET)
+	./$(TARGET) lru traces/astar.txt
+	./$(TARGET) lfu traces/astar.txt
+	./$(TARGET) ml traces/astar.txt
+	./$(TARGET) opt traces/astar.txt
+
+test_mcf: $(TARGET)
 	./$(TARGET) lru traces/mcf.txt
 	./$(TARGET) lfu traces/mcf.txt
 	./$(TARGET) ml traces/mcf.txt

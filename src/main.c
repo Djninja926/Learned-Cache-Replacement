@@ -41,14 +41,14 @@ int main(int argc, char *argv[]) {
 
     // Branch the execution based on algorithm type
     if (strcmp(policy, "opt") == 0) {
-        printf("\nLoading trace into memory for OPT...\n");
+        printf("\nLoading trace into memory for OPT\n");
         TraceEntry *trace = NULL;
         uint64_t n = load_trace(f, &trace);
         
-        printf("Loaded %lu accesses. Computing next_use array...\n", n);
+        printf("Loaded %lu accesses. Computing next_use array\n", n);
         uint64_t *next_use = compute_next_use(trace, n);
         
-        printf("Running OPT simulation...\n");
+        printf("Running OPT simulation\n");
         opt_simulate(&cache, trace, next_use, n);
         
         // Free the massive arrays to prevent memory leaks
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
         free(next_use);
         
     } else {
-        printf("\nRunning streaming simulation...\n");
+        printf("\nRunning streaming simulation\n");
         TraceEntry entry;
         uint64_t access_count = 0;
         Perceptron p;
@@ -72,11 +72,6 @@ int main(int argc, char *argv[]) {
             } else if (strcmp(policy, "ml") == 0) {
                 learned_access(&cache, &p, &entry);
             }
-
-            // Progress indicator every 1M accesses
-            // if (access_count % 1000000 == 0) {
-            //     printf("  Processed %lu M accesses...\n", access_count / 1000000);
-            // }
         }
     }
 
