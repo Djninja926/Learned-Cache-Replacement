@@ -1,14 +1,25 @@
 import random
-# random.seed(42)
 
-# 50 unique cache-line-aligned addresses (lower 6 bits zeroed)
-addrs = [random.randint(0, 0xFFFFFF) & ~0x3F for _ in range(10000)]
+# Define specific PCs
+PC_LOOP = 0x400100
+PC_SCAN = 0x400200
+
+# Define memory regions
+LOOP_START = 0x100000
+SCAN_START = 0x800000
+
+# The loop fits easily in cache
+LOOP_WORKING_SET = 200  
+SCAN_WORKING_SET = 4000 
 
 with open('traces/test.txt', 'w') as f:
-    for _ in range(10000):
-        num = random.choice([0, 1])
-        pc   = random.randint(0x400000, 0x500000)
-        addr = random.choice(addrs)
-        f.write(f'{pc:#x} {addr:#x} {num}\n')
-
-print('Generated traces/test.txt with 10000 accesses over 5000 unique addresses')
+    for i in range(1000000):
+        if random.random() < 0.5:
+            offset = random.randint(0, LOOP_WORKING_SET - 1) * 64
+            addr = LOOP_START + offset
+            f.write(f'{PC_LOOP:#x} {addr:#x} 0\n')
+            
+        else:
+            offset = (i % SCAN_WORKING_SET) * 64
+            addr = SCAN_START + offset
+            f.write(f'{PC_SCAN:#x} {addr:#x} 0\n')

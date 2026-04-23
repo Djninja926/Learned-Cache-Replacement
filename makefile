@@ -15,9 +15,10 @@ clean:
 test_trace:
 	python3 scripts/gen_test_trace.py
 
-test: $(TARGET) test_trace
-	./$(TARGET) lru traces/test.txt
-	./$(TARGET) lfu traces/test.txt
-	./$(TARGET) opt traces/test.txt
+test: $(TARGET)
+	./$(TARGET) lru traces/mcf.txt
+	./$(TARGET) lfu traces/mcf.txt
+	./$(TARGET) ml traces/mcf.txt
+	./$(TARGET) opt traces/mcf.txt
 
 .PHONY: all clean test test_trace

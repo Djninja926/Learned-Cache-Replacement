@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         fprintf(stderr, "Usage: %s <policy> <trace_file>\n", argv[0]);
-        fprintf(stderr, "policies: lru, lfu, opt\n");
+        fprintf(stderr, "policies: lru, lfu, opt, ml\n");
         return 1;
     }
 
@@ -15,9 +15,10 @@ int main(int argc, char *argv[]) {
     const char *trace_path = argv[2];
 
     /* Validate policy before opening anything */
-    if (strcmp(policy, "lru") != 0 && strcmp(policy, "lfu") != 0 && strcmp(policy, "opt") != 0) {
+    if (strcmp(policy, "lru") != 0 && strcmp(policy, "lfu") != 0 && 
+        strcmp(policy, "opt") != 0 && strcmp(policy, "ml") != 0) {
         fprintf(stderr, "Unknown policy: %s\n", policy);
-        fprintf(stderr, "policies: lru, lfu, opt\n");
+        fprintf(stderr, "policies: lru, lfu, opt, ml\n");
         return 1;
     }
 
@@ -33,10 +34,10 @@ int main(int argc, char *argv[]) {
     cache_init(&cache);
 
     printf("Policy: %s\n", policy);
-    printf("Trace: %s\n", trace_path);
-    printf("Sets: %d\n", NUM_SETS);
-    printf("Ways: %d\n", NUM_WAYS);
-    printf("Block size: %d bytes\n", BLOCK_SIZE);
+    // printf("Trace: %s\n", trace_path);
+    // printf("Sets: %d\n", NUM_SETS);
+    // printf("Ways: %d\n", NUM_WAYS);
+    // printf("Block size: %d bytes\n", BLOCK_SIZE);
 
     // Branch the execution based on algorithm type
     if (strcmp(policy, "opt") == 0) {
@@ -58,20 +59,24 @@ int main(int argc, char *argv[]) {
         printf("\nRunning streaming simulation...\n");
         TraceEntry entry;
         uint64_t access_count = 0;
-
+        Perceptron p;
+        perceptron_init(&p);
         while (parse_trace_line(f, &entry)) {
             access_count++;
 
+            // Route to the correct online policy
             if (strcmp(policy, "lru") == 0) {
                 lru_access(&cache, &entry);
             } else if (strcmp(policy, "lfu") == 0) {
                 lfu_access(&cache, &entry);
+            } else if (strcmp(policy, "ml") == 0) {
+                learned_access(&cache, &p, &entry);
             }
 
             // Progress indicator every 1M accesses
-            if (access_count % 1000000 == 0) {
-                printf("  Processed %lu M accesses...\n", access_count / 1000000);
-            }
+            // if (access_count % 1000000 == 0) {
+            //     printf("  Processed %lu M accesses...\n", access_count / 1000000);
+            // }
         }
     }
 

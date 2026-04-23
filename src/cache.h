@@ -13,10 +13,10 @@ typedef struct {
     int valid;
 
     uint64_t timestamp; // Clock for LRU
-    uint64_t frequency; // "Clock" for LFU
+    uint64_t frequency; // Counter for LFU
 
-    // uint64_t current_pc;    // The Program Counter that brought this line into cache
-    // int hit;            // 1 if this line was reused (good), 0 if never reused (dead block)
+    uint64_t current_pc; // The Program Counter that brought this line into cache
+    int hit; // 1 if this line was reused (good), 0 if never reused (dead block)
 } CacheLine;
 
 typedef struct {
@@ -36,20 +36,13 @@ typedef struct {
     int type;
 } TraceEntry;
 
-
 /* Function declarations */
-
 void cache_init(Cache *cache); // Initialize all cache lines to invalid
 int parse_trace_line(FILE *f, TraceEntry *entry);
- 
+
 // Given a full memory address, extract the set index and tag
 uint64_t get_set_index(uint64_t address);
 uint64_t get_tag(uint64_t address);
-
 void cache_print(Cache *cache);
-
-
-
-
 
 #endif /* CACHE_H */
